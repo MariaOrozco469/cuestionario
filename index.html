@@ -1,0 +1,130 @@
+<body>
+<h1>
+    <span style="font-size: 3rem;">💾</span>
+    ✨ Cuestionario: Historia de la Tecnología ✨
+    <span style="font-size: 3rem;">⚙️</span>
+</h1>
+
+<div id="start-screen">
+    <h2>👋 ¡Bienvenido al Viaje Digital!</h2>
+    <p>Pon a prueba tus conocimientos sobre los pioneros y máquinas que moldearon el mundo moderno.</p>
+    <input id="studentName" class="input-name" type="text" placeholder="Tu nombre" />
+    <br>
+    <button onclick="startQuiz()">Comenzar Reto Tecnológico</button>
+</div>
+
+<div id="quiz"></div>
+<div id="result"></div>
+
+<script>
+const questions = [
+    {
+        question: "¿Quién es considerado el **padre de la computación**?",
+        options: ["Alan Turing", "Charles Babbage", "John von Neumann"],
+        answer: "Charles Babbage",
+        explanation: "Charles Babbage diseñó la máquina analítica, considerada el primer concepto de computadora programable.",
+        icon: "⚙️" // Icono para esta pregunta
+    },
+    {
+        question: "¿Cuál fue la primera computadora electrónica de propósito general?",
+        options: ["ENIAC", "UNIVAC", "Colossus"],
+        answer: "ENIAC",
+        explanation: "ENIAC fue la primera computadora electrónica de propósito general, construida en 1945.",
+        icon: "💡" // Icono para esta pregunta
+    },
+    {
+        question: "¿En qué generación se usaron **transistores**?",
+        options: ["Primera", "Segunda", "Tercera"],
+        answer: "Segunda",
+        explanation: "La segunda generación de computadoras reemplazó las válvulas al vacío por transistores, haciéndolas más rápidas y pequeñas.",
+        icon: "🔌" // Icono para esta pregunta
+    },
+    {
+        question: "¿Quién inventó el **primer mouse**?",
+        options: ["Steve Jobs", "Bill Gates", "Douglas Engelbart"],
+        answer: "Douglas Engelbart",
+        explanation: "El primer mouse fue creado por Douglas Engelbart en 1964 como parte de un sistema avanzado de interfaz.",
+        icon: "🖱️" // Icono para esta pregunta
+    },
+    {
+        question: "¿Qué compañía lanzó la primera **PC exitosa**?",
+        options: ["Apple", "IBM", "Microsoft"],
+        answer: "IBM",
+        explanation: "La IBM PC de 1981 se convirtió en el estándar de la computación personal.",
+        icon: "💻" // Icono para esta pregunta
+    }
+];
+
+let studentName = "";
+let studentAnswers = [];
+
+function startQuiz() {
+    studentName = document.getElementById('studentName').value;
+    if (!studentName.trim()) return alert("Por favor ingresa tu nombre");
+
+    document.getElementById('start-screen').style.display = "none";
+
+    const quizDiv = document.getElementById('quiz');
+    quizDiv.innerHTML = "";
+
+    questions.forEach((q, i) => {
+        // --- AQUÍ ESTÁ EL CAMBIO PRINCIPAL PARA AÑADIR LA IMAGEN/ICONO ---
+        quizDiv.innerHTML += `
+            <div class='question-card'>
+                <div class='question-icon'>${q.icon}</div>
+                <div class='question-content'>
+                    <div class='question-title'>${i+1}. ${q.question}</div>
+                    <ul>
+                        ${q.options.map(opt => `
+                            <li>
+                                <label><input type='radio' name='q${i}' value='${opt}'> ${opt}</label>
+                            </li>`).join('')}
+                    </ul>
+                </div>
+            </div>`;
+    });
+
+    quizDiv.innerHTML += `<button onclick='finishQuiz()'>Finalizar y Ver Puntuación 🏆</button>`;
+}
+
+function finishQuiz() {
+    const quizDiv = document.getElementById('quiz');
+    quizDiv.style.display = "none";
+    
+    const resultDiv = document.getElementById('result');
+    let correctCount = 0;
+    resultDiv.innerHTML = `<h2>Resultados de ${studentName}</h2>`;
+
+    questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name='q${index}']:checked`);
+        const studentAnswer = selected ? selected.value : "Sin responder";
+        const correct = studentAnswer === q.answer;
+        
+        if(correct) {
+            correctCount++;
+        }
+
+        resultDiv.innerHTML += `
+            <div class="feedback-card ${correct ? 'correct' : 'incorrect'}">
+                <h3>${correct ? '✅ ¡Correcto!' : '❌ ¡Incorrecto!'}</h3>
+                <h4>Pregunta ${index + 1}: ${q.question}</h4>
+                <p><strong>Tu respuesta:</strong> ${studentAnswer}</p>
+                <p><strong>Respuesta correcta:</strong> ${q.answer}</p>
+                <p class="explanation"><strong>${q.icon} Explicación:</strong> ${q.explanation}</p>
+            </div>
+        `;
+    });
+    
+    // Tarjeta de resumen final
+    resultDiv.innerHTML = `
+        <div id="summary-card" style="text-align: center; padding: 25px; margin-bottom: 30px; background: #ffe0b2; border-radius: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <h2 style="color: #e91e63;">Resultado Final 🌟</h2>
+            <p style="font-size: 1.5rem; font-weight: bold;">${studentName}, tu puntuación es:</p>
+            <p style="font-size: 2.5rem; color: #6a1b9a;">${correctCount} / ${questions.length}</p>
+            <p>${correctCount === questions.length ? '¡Felicidades, eres un maestro de la historia tecnológica! 🎉' : '¡Sigue practicando para dominar la historia digital! 💪'}</p>
+        </div>
+    ` + resultDiv.innerHTML;
+}
+</script>
+</body>
+</html>
